@@ -1,5 +1,8 @@
 # weather_severity.py
 
+import os
+import sys
+
 def analyze_severity(readings):
     avg = sum(readings) / len(readings)
 
@@ -16,14 +19,21 @@ def analyze_severity(readings):
     else:
         return avg, "Normal"
 
-
 def main():
-    location = input("Enter Location: ")
-    date = input("Enter Date: ")
-
-    readings = []
-    for i in range(1, 4):
-        readings.append(int(input(f"Enter weather index {i}: ")))
+    # Read from command-line arguments if provided
+    if len(sys.argv) == 6:
+        location = sys.argv[1]
+        date = sys.argv[2]
+        readings = [int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])]
+    else:
+        # fallback to environment variables
+        location = os.getenv("LOCATION", "Unknown")
+        date = os.getenv("DATE", "Unknown")
+        readings = [
+            int(os.getenv("WEATHER1", 0)),
+            int(os.getenv("WEATHER2", 0)),
+            int(os.getenv("WEATHER3", 0))
+        ]
 
     avg, level = analyze_severity(readings)
 
@@ -32,7 +42,6 @@ def main():
     print("Date:", date)
     print("Average Index:", avg)
     print("Severity Level:", level)
-
 
 if __name__ == "__main__":
     main()
